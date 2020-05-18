@@ -1,7 +1,10 @@
 from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 from sklearn.model_selection import KFold
 from sklearn.linear_model import LinearRegression
+from sklearn.inspection import permutation_importance
 import numpy as np
+import pdb
+import pandas as pd
 
 
 class SuperlearnerRegression(BaseEstimator, RegressorMixin):
@@ -22,6 +25,8 @@ class SuperlearnerRegression(BaseEstimator, RegressorMixin):
         self.random_state = random_state
         self.cv = cv
 
+
+
     def get_models_name(self):
         model_names = []
         for model in self.estimators:
@@ -29,8 +34,9 @@ class SuperlearnerRegression(BaseEstimator, RegressorMixin):
             model_names.append(name)
 
         self.models_name = model_names
-
+        
         return self.models_name
+
 
     def fit(self, X, y, shuffle=True):
         self.X = X
@@ -71,14 +77,15 @@ class SuperlearnerRegression(BaseEstimator, RegressorMixin):
 
         for model in self.estimators:
             model.fit(self.X, self.y)
-
+ 
         return self
-
-    def get_permutation_importances(self, scoring=None):
-        p_importances = permutation_importance(estimator=self.meta_estimator, X=self.meta_X, y=self.meta_y,
-                                               scoring=scoring, random_state=self.random_state)
-
+    
+        
+    def get_permutation_importances(self,scoring = None):
+        p_importances = permutation_importance(estimator = self.meta_estimator, X = self.meta_X, y = self.meta_y, scoring = scoring, random_state= self.random_state)
+        
         return p_importances
+
 
     def _make_meta_X(self, matrix_I, matrix_II):
         matrix = np.array([])
@@ -86,11 +93,14 @@ class SuperlearnerRegression(BaseEstimator, RegressorMixin):
             matrix = np.hstack([matrix_I, matrix_II])
         return matrix
 
+
+
     def predict(self, X):
         predictions = []
         for model in self.estimators:
             predictions.append(model.predict(X).reshape(-1, 1))
         predictions = np.hstack(predictions)
+
 
         if self.use_initial_data:
             X = self._make_meta_X(X, predictions)
@@ -100,7 +110,5 @@ class SuperlearnerRegression(BaseEstimator, RegressorMixin):
         meta_predictions = self.meta_estimator.predict(X)
 
         return meta_predictions
-
-
 
 
