@@ -48,5 +48,5 @@ predictions = superlearner.predict(X_test)
 
 4. Optionally, compute permutation importances using the````.get_permutation_importances(scoring=None) method.````
 
-``importances = superlearner.get_permutation_importances()```
+```importances = superlearner.get_permutation_importances()```
 
