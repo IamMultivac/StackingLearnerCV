@@ -36,12 +36,12 @@ base_regressors = [Regressor1(), Regressor2(), ...]
 superlearner = SuperlearnerRegression(estimators=base_regressors, meta_estimator=None, use_initial_data=False, cv=5, random_state=1990)
 ````
 
-3. Fit the model to your data using the ``.fit(X, y)``` method.
+3. Fit the model to your data using the ```.fit(X, y)``` method.
 ```
 superlearner.fit(X_train, y_train)
 `````
 
-Predict with the model using the ```.predict(X)```` method.
+Predict with the model using the ````.predict(X)```` method.
 ```
 predictions = superlearner.predict(X_test)
 `````
